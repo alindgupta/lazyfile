@@ -7,22 +7,22 @@ def readme() -> str:
 
 
 setup(name='lazyfile',
-      version='0.1',
-      description='Lazy function application for processing text files line by line',
+      version='1.0',
+      description=('Lazy function application for'
+                   'processing text files line by line'),
       long_description=readme(),
       classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 3.5',
-        'Topic :: Text Processing :: Linguistic',
+        'Programming Language :: Python :: 3.6.0',
+        'Topic :: Text Processing',
       ],
       keywords='functional lazy file input',
-      url='http://github.com/fushitarazu/lazyfile',
-      author='fushitarazu',
+      url='http://github.com/alindgupta/lazyfile',
+      author='alindgupta',
       author_email='',
       license='MIT',
       packages=['lazyfile'],
-      install_requires=[
-      ],
+      install_requires=[],
       include_package_data=True,
       zip_safe=False)
