@@ -45,7 +45,7 @@ class LazyFile:
     """ Lazily read a text file and apply a function to each line
 
     Usage requires the use of a context-manager so files can be closed
-    appropriately
+    appropriately.
 
     """
     def __init__(self, filename: str, buf=-1, enc='utf-8'):
