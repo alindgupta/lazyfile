@@ -8,8 +8,15 @@ import os
 from functools import partial
 
 
-# Note: This function should not be used directly.
-# _fst_arg_last is a helper function for `LazyFile.map_function`
+class ProhibitedAction(Exception):
+    """ Custom error class.
+    """
+    def __init__(self, message):
+        super(ProhibitedAction, self).__init__(message)
+
+
+# Note: This function does not need to be called directly.
+# `_fst_arg_last` is a helper function for `Lazyfile.map_function`
 def _fst_arg_last(func):
     """ Returns a new function whose final parameter
     is the first parameter of the function arglist
@@ -41,9 +48,8 @@ def _fst_arg_last(func):
     return inner
 
 
-class LazyFile:
+class Lazyfile(object):
     """ Lazily read a text file and apply a function to each line
-
     Usage requires the use of a context-manager so files can be closed
     appropriately.
 
@@ -51,18 +57,26 @@ class LazyFile:
     def __init__(self, filename: str, buf=-1, enc='utf-8'):
         if not os.path.isfile(filename):
             raise IOError(f'Could not find {filename}')
-        self.context_managed = False
+        self._context_managed = False
         self._file = filename           # filename
         self._fhandle = None            # file handle
         self.lines = None               # line iterator
         self.buf = buf
         self.enc = enc
 
+    @property
+    def context_managed(self):
+        return self._context_managed
+
+    @context_managed.setter
+    def context_managed(self, value):
+        raise ProhibitedAction('This attribute can not set in this way.')
+
     # context manager - enter clause
     def __enter__(self):
         self._fhandle = open(self._file, 'r', self.buf, self.enc)
         self.lines = (line for line in self._fhandle)
-        self.context_managed = True
+        self._context_managed = True
         return self
 
     # context manager - exit clause
@@ -93,8 +107,8 @@ class LazyFile:
         A generator.
 
         """
-        if not self.context_managed:
-            raise Exception('Object must be initialized with context manager')
+        if not self._context_managed:
+            raise ProhibitedAction('Object must be initialized with context manager.')
         try:
             yield from (func(line, *args, **kwargs) for line in self.lines)
         except Exception:
@@ -115,14 +129,14 @@ class LazyFile:
         A generator.
 
         """
-        if not self.context_managed:
-            raise Exception('Object must be initialized with context manager')
+        if not self._context_managed:
+            raise ProhibitedAction(
+                'Object must be initialized with context manager')
         try:
             yield from map(
-                func if not args else partial(
-                    _fst_arg_last(func),
-                    *args,
-                    **kwargs),
+                func if not args else partial(_fst_arg_last(func),
+                                              *args,
+                                              **kwargs),
                 self.lines)
         except Exception:
             raise
