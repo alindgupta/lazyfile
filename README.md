@@ -1,4 +1,5 @@
 ## Lazy function application over text files
+[![Build Status](https://travis-ci.org/alindgupta/lazyfile.svg?branch=master)](https://travis-ci.org/alindgupta/lazyfile)
 
 #### Usage
 ```python
