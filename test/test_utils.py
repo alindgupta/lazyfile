@@ -1,5 +1,8 @@
 import lazyfile
 from lazyfile import utils
+import os
+
+filename = os.path.join(os.path.dirname(__file__), 'text.txt')
 
 def test_initialization():
     # no argument
@@ -18,7 +21,7 @@ def test_initialization():
 
     # no context manager
     try:
-        a = utils.Lazyfile('text.txt')
+        a = utils.Lazyfile(filename)
         a.map_function(len)
         a.apply(len)
         assert False
@@ -26,7 +29,7 @@ def test_initialization():
         assert True
 
     # correct use
-    with utils.Lazyfile('text.txt') as txt:
+    with utils.Lazyfile(filename) as txt:
         print(txt.map_function(len))
     assert True
         
